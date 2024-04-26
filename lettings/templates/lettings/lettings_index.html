@@ -20,7 +20,7 @@
                 <ul class="list-group list-group-flush list-group-careers">
                     {% for letting in lettings_list %}
                         <li class="list-group-item">
-                            <a href="{% url 'letting' letting_id=letting.id %}">{{ letting.title }}</a>
+                            <a href="{% url 'lettings:lettings_detail' letting_id=letting.id %}">{{ letting.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -33,10 +33,10 @@
 
 <div class="container px-5 py-5 text-center">
     <div class="justify-content-center">
-        <a class="btn fw-500 ms-lg-4 btn-primary px-10" href="{% url 'index' %}">
+        <a class="btn fw-500 ms-lg-4 btn-primary px-10" href="{% url 'home' %}">
             Home
         </a>
-        <a class="btn fw-500 ms-lg-4 btn-primary px-10" href="{% url 'profiles_index' %}">
+        <a class="btn fw-500 ms-lg-4 btn-primary px-10" href="{% url 'profiles:profiles_index' %}">
             Profiles
         </a>
     </div>
