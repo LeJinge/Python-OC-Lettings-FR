@@ -74,9 +74,6 @@ class LettingsIndexViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'lettings/lettings_index.html')
 
-    def test_pagination_is_correct(self):
-        # Supposons que vous voulez tester la pagination ici
-        pass
 
 
 class LettingDetailViewTest(TestCase):
@@ -134,7 +131,7 @@ class LettingsIntegrationTest(TestCase):
     def test_lettings_index_view_displays_lettings(self):
         response = self.client.get(reverse('lettings:lettings_index'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Test Letting")  # Vérifie si le listing est présent dans la réponse
+        self.assertContains(response, "Test Letting")
 
     def test_letting_detail_view_displays_details(self):
         response = self.client.get(reverse('lettings:lettings_detail', args=[self.letting.id]))
