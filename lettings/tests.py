@@ -3,6 +3,7 @@ import unittest
 from django.test import TestCase, Client
 from django.urls import reverse
 from selenium import webdriver
+from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
@@ -30,6 +31,10 @@ class AddressModelTest(TestCase):
             country_iso_code="USA"
         )
         self.assertEqual(str(address), "123 Main Street")
+
+    def test_verbose_name_plural(self):
+        field_label = Address._meta.verbose_name_plural
+        self.assertEqual(field_label, 'Adresses')
 
 
 class LettingModelTest(TestCase):
@@ -199,6 +204,36 @@ class LettingsFunctionalTest(unittest.TestCase):
         ]
 
         self.assertEqual(address_details, expected_details)
+
+
+class AdminInterfaceTest(LettingsFunctionalTest):
+    def setUp(self):
+        super().setUp()
+        self.admin_url = "http://localhost:8000/admin/"
+
+    def admin_login(self):
+        self.driver.get(self.admin_url)
+        username_input = self.driver.find_element(By.NAME, "username")
+        password_input = self.driver.find_element(By.NAME, "password")
+        username_input.send_keys("admin")  # Remplacez par votre nom d'utilisateur admin
+        password_input.send_keys("Abc1234")  # Remplacez par votre mot de passe admin
+        self.driver.find_element(By.CSS_SELECTOR, "input[type='submit']").click()
+
+    def verify_admin_interface(self):
+        self.admin_login()
+
+        # Vérifier la présence du texte "Adresses"
+        try:
+            WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.LINK_TEXT, "Adresses")))
+            address_link = self.driver.find_element(By.LINK_TEXT, "Adresses")
+            self.assertIsNotNone(address_link)
+        except TimeoutException:
+            self.fail("Failed to find 'Adresses' link text")
+
+        # Vérifier l'absence du texte "Addresss"
+        with self.assertRaises(NoSuchElementException):
+            self.driver.find_element(By.LINK_TEXT, "Addresss")
+
 
 # Exécuter les tests uniquement si ce fichier est exécuté directement
 if __name__ == "__main__":
