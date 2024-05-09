@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from oc_lettings_site.settings import logger
+
 
 def index(request):
     """
@@ -29,6 +31,7 @@ def error_404(request, exception):
     Returns :
         HttpResponse : La réponse HTTP.
     """
+    logger.error(f"Erreur 404 survenue : {exception}", exc_info=True)
     return render(request, '404.html', status=404)
 
 
@@ -44,6 +47,7 @@ def error_500(request):
     Returns :
         HttpResponse : La réponse HTTP.
     """
+    logger.error("Erreur 500 survenue", exc_info=True)
     return render(request, '500.html', status=500)
 
 
