@@ -1,4 +1,7 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
+
+from oc_lettings_site.settings import logger
 from .models import Letting
 
 
@@ -14,8 +17,12 @@ def lettings_index(request):
     Returns :
         HttpResponse : La réponse générée par la vue.
     """
-    lettings_list = Letting.objects.all()
-    return render(request, 'lettings/lettings_index.html', {'lettings_list': lettings_list})
+    try:
+        lettings_list = Letting.objects.all()
+        return render(request, 'lettings/lettings_index.html', {'lettings_list': lettings_list})
+    except Letting.DoesNotExist:
+        logger.error("Aucun objet Letting ne correspond à cet ID.", exc_info=True)
+        raise Http404("Aucun objet ne correspond à cet ID.")
 
 
 def letting_detail(request, letting_id):
@@ -32,8 +39,12 @@ def letting_detail(request, letting_id):
     Returns :
         HttpResponse : La réponse générée par la vue.
     """
-    letting = get_object_or_404(Letting, id=letting_id)
-    return render(request, 'lettings/letting.html', {
-        'title': letting.title,
-        'address': letting.address,
-    })
+    try:
+        letting = get_object_or_404(Letting, id=letting_id)
+        return render(request, 'lettings/letting.html', {
+            'title': letting.title,
+            'address': letting.address,
+        })
+    except Letting.DoesNotExist:
+        logger.error("Aucun objet Letting ne correspond à cet ID.", exc_info=True)
+        raise Http404("Aucun objet ne correspond à cet ID.")

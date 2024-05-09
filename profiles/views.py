@@ -1,5 +1,7 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 
+from oc_lettings_site.settings import logger
 from .models import Profile
 
 
@@ -15,8 +17,12 @@ def profiles_index(request):
     Returns :
         HttpResponse : L'objet réponse HTTP Django.
     """
-    profiles_list = Profile.objects.all()
-    return render(request, 'profiles/profiles_index.html', {'profiles_list': profiles_list})
+    try:
+        profiles_list = Profile.objects.all()
+        return render(request, 'profiles/profiles_index.html', {'profiles_list': profiles_list})
+    except Profile.DoesNotExist:
+        logger.error("Aucun objet Profile ne correspond à cet ID.", exc_info=True)
+        raise Http404("Aucun objet ne correspond à cet ID.")
 
 
 def profile_detail(request, profile_id):
@@ -33,5 +39,9 @@ def profile_detail(request, profile_id):
     Returns :
         HttpResponse : L'objet réponse HTTP Django.
     """
-    profile = get_object_or_404(Profile, id=profile_id)
-    return render(request, 'profiles/profile.html', {'profile': profile})
+    try:
+        profile = get_object_or_404(Profile, id=profile_id)
+        return render(request, 'profiles/profile.html', {'profile': profile})
+    except Profile.DoesNotExist:
+        logger.error("Aucun objet Profile ne correspond à cet ID.", exc_info=True)
+        raise Http404("Aucun objet ne correspond à cet ID.")
