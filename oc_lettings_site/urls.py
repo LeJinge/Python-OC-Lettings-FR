@@ -13,7 +13,9 @@ Chaque URL est associée à une vue qui est appelée lorsque l'URL est visitée.
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.static import serve
+
 from .views import index, trigger_500
 
 # Handlers pour les erreurs 404 et 500
@@ -38,5 +40,10 @@ urlpatterns = [
 ]
 
 # Si le mode DEBUG est désactivé, ajoute les URL pour servir les fichiers statiques
-if not settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# if not settings.DEBUG:
+#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+#     urlpatterns += [
+#         re_path(r'^media/(?P<path>.*)$', serve, {
+#             'document_root': settings.MEDIA_ROOT,
+#         }),
+#     ]
