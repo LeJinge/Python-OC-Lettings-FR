@@ -1,9 +1,7 @@
 import logging
 import os
 import yaml
-
 from pathlib import Path
-
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
@@ -29,7 +27,6 @@ ALLOWED_HOSTS = config['django']['allowed_hosts']
 # Application definition
 
 INSTALLED_APPS = [
-    "whitenoise.runserver_nostatic",
     'oc_lettings_site.apps.OcLettingsSiteConfig',
     'lettings',
     'profiles',
@@ -39,10 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -113,13 +110,24 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Configuration Azure Storage
+AZURE_ACCOUNT_NAME = 'lettingsoc'
+AZURE_ACCOUNT_KEY = '4VXqkj6YPa7JoVQo+0+tNxfqNJ44o8hTOlcZhNTC+57a78srtfiQT6diE/1HmQVKbh3M1l4VWIfN+ASt/7mqPQ=='
+AZURE_CONTAINER = 'static'
+
+# Utiliser des custom storages (optionnel mais recommandé)
+DEFAULT_FILE_STORAGE = 'oc_lettings_site.custom_storages.MediaStorage'
+STATICFILES_STORAGE = 'oc_lettings_site.custom_storages.StaticStorage'
+
+# Configuration CDN
+CDN_URL = 'https://cdn-endpoint-lettings.azureedge.net/static/'
+STATIC_URL = CDN_URL
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
+STATIC_ROOT = str(BASE_DIR / 'staticfiles')
+STATICFILES_DIRS = [str(BASE_DIR / 'static')]
 
-
-STATIC_URL = '/static/'
-# STATICFILES_DIRS = [BASE_DIR / "static",]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Sentry Configuration
 SENTRY_DSN = config['sentry']['dsn']
 

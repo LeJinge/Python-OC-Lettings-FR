@@ -1,66 +1,50 @@
 version: 2.1
 
-orbs:
-  azure-acr: circleci/azure-acr@1.1.0  # Orb pour faciliter les interactions avec Azure Container Registry
-  azure-cli: circleci/azure-cli@1.0.0  # Orb pour utiliser Azure CLI
-
 jobs:
-  build_and_test:
+  test:
     docker:
-      - image: cimg/python:3.11  # Changez selon l'image de base que vous utilisez
+      - image: circleci/python:3.11
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
-          name: Install Dependencies
-          command: pip install -r requirements.txt
-      - run:
-          name: Run Tests
-          command: pytest  # Assurez-vous que pytest est configuré pour votre projet
-
-  build_docker_image:
-    docker:
-      - image: cimg/python:3.11
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build Docker Image
+          name: Install dependencies
           command: |
-            docker build -t yourappname:$CIRCLE_SHA1 .
-            echo $AZURE_CR_PASSWORD | docker login youracrname.azurecr.io --username $AZURE_CR_USERNAME --password-stdin
-            docker tag yourappname:$CIRCLE_SHA1 youracrname.azurecr.io/yourappname:$CIRCLE_SHA1
-            docker push youracrname.azurecr.io/yourappname:$CIRCLE_SHA1
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+      - run:
+          name: Run tests with coverage
+          command: |
+            coverage run --source='.' manage.py test
+            coverage report --fail-under=80
+            coverage xml
+      - store_artifacts:
+          path: coverage.xml
+          destination: coverage.xml
 
-  deploy_to_azure:
+  build_and_push:
     docker:
-      - image: cimg/python:3.8
+      - image: circleci/python:3.11
     steps:
       - checkout
-      - azure-cli/install
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
-          name: Deploy to Azure App Service
-          command: |
-            az login --service-principal -u $AZURE_AD_APP_ID -p $AZURE_AD_PASSWORD --tenant $AZURE_AD_TENANT_ID
-            az acr login --name youracrname
-            az webapp config container set --name yourappservice --resource-group yourresourcegroup --docker-custom-image-name youracrname.azurecr.io/yourappname:$CIRCLE_SHA1
+          name: Login to DockerHub
+          command: echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+      - run:
+          name: Build Docker image
+          command: docker build -t lejinge/oc-lettings:latest .
+      - run:
+          name: Push Docker image
+          command: docker push lejinge/oc-lettings:latest
 
 workflows:
   version: 2
-  build-test-deploy:
+  test_build_push:
     jobs:
-      - build_and_test:
-          filters:
-            branches:
-              only: master
-      - build_docker_image:
+      - test
+      - build_and_push:
           requires:
-            - build_and_test
-          filters:
-            branches:
-              only: master
-      - deploy_to_azure:
-          requires:
-            - build_docker_image
-          filters:
-            branches:
-              only: master
+            - test

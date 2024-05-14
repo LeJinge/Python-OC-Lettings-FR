@@ -1,0 +1,2 @@
+lettings\admin.py:1:1: F401 'django.contrib.admin' imported but unused
+lettings\tests.py:1:1: F401 'django.test.TestCase' imported but unused
