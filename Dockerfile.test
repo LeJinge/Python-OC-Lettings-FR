@@ -1,4 +1,4 @@
-# Utilisez une image de base avec Python 3.11
+# Utilisez une image de base avec Python 3.10
 FROM python:3.11-slim
 
 # Installez les dépendances de base
