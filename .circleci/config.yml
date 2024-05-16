@@ -1,9 +1,14 @@
 version: 2.1
 
-jobs:
-  test:
+executors:
+  docker-executor:
     docker:
       - image: circleci/python:3.11
+    working_directory: ~/repo
+
+jobs:
+  test:
+    executor: docker-executor
     steps:
       - checkout
       - setup_remote_docker:
@@ -24,8 +29,7 @@ jobs:
           destination: coverage.xml
 
   build_and_push:
-    docker:
-      - image: circleci/python:3.11
+    executor: docker-executor
     steps:
       - checkout
       - setup_remote_docker:
@@ -35,10 +39,10 @@ jobs:
           command: echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - run:
           name: Build Docker image
-          command: docker build -t lejinge/oc-lettings:latest .
+          command: docker build -t ${DOCKERHUB_USERNAME}/oc-lettings:latest .
       - run:
           name: Push Docker image
-          command: docker push lejinge/oc-lettings:latest
+          command: docker push ${DOCKERHUB_USERNAME}/oc-lettings:latest
 
 workflows:
   version: 2
