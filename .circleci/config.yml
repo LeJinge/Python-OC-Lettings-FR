@@ -3,9 +3,9 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: lejinge/oc-lettings:test
+      - image: circleci/python:3.10
     working_directory: ~/repo
-    resource_class: large
+    resource_class: large  # Augmente les ressources
 
 jobs:
   build_test_image:
@@ -16,7 +16,7 @@ jobs:
           version: 20.10.7
       - run:
           name: Build Docker image for testing
-          command: docker build -f Dockerfile.test -t lejinge/oc-lettings:test .
+          command: docker build -f Dockerfile.test -t oc-lettings:test .
 
   start_server:
     executor: docker-executor
@@ -31,17 +31,23 @@ jobs:
   test:
     executor: docker-executor
     steps:
-      - checkout
       - setup_remote_docker:
           version: 20.10.7
       - run:
-          name: Run functional tests in Docker
-          command: docker run --network=host lejinge/oc-lettings:test python manage.py test
+          name: Run tests in Docker
+          command: docker run --rm oc-lettings:test python manage.py test
+      - run:
+          name: Generate coverage report
+          command: |
+            docker run --rm oc-lettings:test coverage run --source='.' manage.py test
+            docker run --rm oc-lettings:test coverage report --fail-under=80
+            docker run --rm oc-lettings:test coverage xml
+      - store_artifacts:
+          path: coverage.xml
+          destination: coverage.xml
 
   build_prod_image:
-    docker:
-      - image: circleci/python:3.10
-    working_directory: ~/repo
+    executor: docker-executor
     steps:
       - checkout
       - setup_remote_docker:
@@ -51,9 +57,7 @@ jobs:
           command: docker build -f Dockerfile.prod -t oc-lettings:latest .
 
   push_prod_image:
-    docker:
-      - image: circleci/python:3.10
-    working_directory: ~/repo
+    executor: docker-executor
     steps:
       - setup_remote_docker:
           version: 20.10.7
@@ -77,7 +81,7 @@ workflows:
             - build_test_image
       - test:
           requires:
-            - start_server
+            - build_test_image
       - build_prod_image:
           requires:
             - test
