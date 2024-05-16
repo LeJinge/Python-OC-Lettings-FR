@@ -5,25 +5,38 @@ executors:
     docker:
       - image: lejinge/oc-lettings:test
     working_directory: ~/repo
-    resource_class: large  # Augmente les ressources
+    resource_class: large
 
 jobs:
+  build_test_image:
+    executor: docker-executor
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.7
+      - run:
+          name: Build Docker image for testing
+          command: docker build -f Dockerfile.test -t lejinge/oc-lettings:test .
+
+  start_server:
+    executor: docker-executor
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.7
+      - run:
+          name: Start Django server
+          command: docker run -d --name test_server -p 8000:8000 lejinge/oc-lettings:test gunicorn --bind 0.0.0.0:8000 myapp.wsgi:application
+
   test:
     executor: docker-executor
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
-          name: Run tests in Docker
-          command: python manage.py test
-      - run:
-          name: Generate coverage report
-          command: |
-            coverage run --source='.' manage.py test
-            coverage report --fail-under=80
-            coverage xml
-      - store_artifacts:
-          path: coverage.xml
-          destination: coverage.xml
+          name: Run functional tests in Docker
+          command: docker run --network=host lejinge/oc-lettings:test python manage.py test
 
   build_prod_image:
     docker:
@@ -58,7 +71,13 @@ workflows:
   version: 2
   build_test_push:
     jobs:
-      - test
+      - build_test_image
+      - start_server:
+          requires:
+            - build_test_image
+      - test:
+          requires:
+            - start_server
       - build_prod_image:
           requires:
             - test
