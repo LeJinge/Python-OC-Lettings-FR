@@ -1,9 +1,7 @@
 import logging
 import os
 import yaml
-
 from pathlib import Path
-
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
@@ -12,21 +10,28 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load configuration from YAML file
-with open(os.path.join(BASE_DIR, 'config.yaml')) as file:
-    config = yaml.safe_load(file)
-
+config = {}
+config_file = BASE_DIR / 'config.yaml'
+if config_file.exists():
+    with open(config_file) as f:
+        config = yaml.safe_load(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config['django']['secret_key']
+if config_file.exists():
+    SECRET_KEY = config['CONFIG_SECRET_KEY']
+else:
+    SECRET_KEY = os.getenv('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config['django']['debug']
+DEBUG = False
 
-ALLOWED_HOSTS = config['django']['allowed_hosts']
-
+if config_file.exists():
+    ALLOWED_HOSTS = config['CONFIG_ALLOWED_HOSTS']
+else:
+    ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS')
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -112,21 +118,41 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Configuration Azure Storage
+if config_file.exists():
+    AZURE_ACCOUNT_NAME = config['CONFIG_AZURE_ACCOUNT_NAME']
+    AZURE_ACCOUNT_KEY = config['CONFIG_AZURE_ACCOUNT_KEY']
+    AZURE_CONTAINER = config['CONFIG_AZURE_CONTAINER']
+else:
+    AZURE_ACCOUNT_NAME = os.getenv('CONFIG_AZURE_ACCOUNT_NAME')
+    AZURE_ACCOUNT_KEY = os.getenv('CONFIG_AZURE_ACCOUNT_KEY')
+    AZURE_CONTAINER = os.getenv('CONFIG_AZURE_CONTAINER')
+
+# Utiliser des custom storages (optionnel mais recommandé)
+DEFAULT_FILE_STORAGE = 'oc_lettings_site.custom_storages.MediaStorage'
+STATICFILES_STORAGE = 'oc_lettings_site.custom_storages.StaticStorage'
+
+# Configuration CDN
+if config_file.exists():
+    CDN_URL = config['CONFIG_AZURE_CDN_URL']
+else:
+    CDN_URL = os.getenv('CONFIG_AZURE_CDN_URL')
+
+STATIC_URL = CDN_URL
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATIC_ROOT = str(BASE_DIR / 'staticfiles')
+STATICFILES_DIRS = [str(BASE_DIR / 'static')]
 
 # Sentry Configuration
-SENTRY_DSN = config['sentry']['dsn']
+if config_file.exists():
+    SENTRY_DSN = config['CONFIG_SENTRY_DSN']
+else:
+    SENTRY_DSN = os.getenv('CONFIG_SENTRY_DSN')
 
 sentry_logging = LoggingIntegration(
-    level=logging.INFO,        # Capture info and above as breadcrumbs
+    level=logging.INFO,  # Capture info and above as breadcrumbs
     event_level=logging.ERROR  # Send errors as events
 )
 

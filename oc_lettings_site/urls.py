@@ -10,10 +10,9 @@ Ce module définit les URL pour le projet oc_lettings_site. Il comprend plusieur
 Chaque URL est associée à une vue qui est appelée lorsque l'URL est visitée.
 """
 
-from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+
 from .views import index, trigger_500
 
 # Handlers pour les erreurs 404 et 500
@@ -36,7 +35,3 @@ urlpatterns = [
     # URL pour inclure les URL de l'application profiles
     path('profiles/', include('profiles.urls', namespace='profiles')),
 ]
-
-# Si le mode DEBUG est désactivé, ajoute les URL pour servir les fichiers statiques
-if not settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
