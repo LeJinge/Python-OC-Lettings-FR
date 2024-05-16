@@ -23,7 +23,7 @@ if config_file.exists():
 if config_file.exists():
     SECRET_KEY = config['CONFIG_SECRET_KEY']
 else:
-    SECRET_KEY = os.getenv('DJANGO_SECRET')
+    SECRET_KEY = os.getenv('CONFIG_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
