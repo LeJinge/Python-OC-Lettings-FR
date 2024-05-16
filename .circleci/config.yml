@@ -3,8 +3,9 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: circleci/python:3.10
+      - image: circleci/python:3.11
     working_directory: ~/repo
+    resource_class: large  # Ajout de cette ligne pour augmenter les ressources
 
 jobs:
   build_test_image:
