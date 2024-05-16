@@ -1,14 +1,17 @@
-# Utilisez une image de base avec Python 3.10
-FROM python:3.11-slim
+# Utilisez une image de base alpine pour une taille plus réduite
+FROM python:3.11-alpine
 
 # Installez les dépendances de base
 COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    rm -rf /root/.cache/pip
 
 # Installez les dépendances de test
 COPY requirements-tests.txt .
-RUN pip install --no-cache-dir -r requirements-tests.txt
+RUN pip install --no-cache-dir -r requirements-tests.txt && \
+    rm -rf /root/.cache/pip
 
 # Copiez l'application
 COPY . .
