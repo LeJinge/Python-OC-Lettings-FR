@@ -16,7 +16,7 @@ jobs:
           version: 20.10.7
       - run:
           name: Build Docker image for testing
-          command: docker build -f Dockerfile.test -t oc-lettings:test .
+          command: docker build -f Dockerfile.test -t lejinge/oc-lettings:test .
 
   test:
     executor: docker-executor
@@ -25,13 +25,13 @@ jobs:
           version: 20.10.7
       - run:
           name: Run tests in Docker
-          command: docker run --rm oc-lettings:test python manage.py test
+          command: docker run --rm lejinge/oc-lettings:test python manage.py test
       - run:
           name: Generate coverage report
           command: |
-            docker run --rm oc-lettings:test coverage run --source='.' manage.py test
-            docker run --rm oc-lettings:test coverage report --fail-under=80
-            docker run --rm oc-lettings:test coverage xml
+            docker run --rm lejinge/oc-lettings:test coverage run --source='.' manage.py test
+            docker run --rm lejinge/oc-lettings:test coverage report --fail-under=80
+            docker run --rm lejinge/oc-lettings:test coverage xml
       - store_artifacts:
           path: coverage.xml
           destination: coverage.xml
