@@ -3,23 +3,30 @@ FROM python:3.10-slim
 
 # Installez les dépendances de base
 COPY requirements.txt .
-RUN apt update
-RUN apt -f install -y
-RUN apt-get install -y wget
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN apt-get install ./google-chrome-stable_current_amd64.deb -y
-RUN echo "Chrome: " && google-chrome --version
-
-# Installez les dépendances de test
 COPY requirements-tests.txt .
-RUN pip install --no-cache-dir --no-build-isolation -r requirements-tests.txt && \
-    rm -rf /root/.cache/pip
+
+# Installez Google Chrome et les dépendances nécessaires en une seule commande RUN
+RUN apt-get update && \
+    apt-get install -y wget gnupg && \
+    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list' && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable && \
+    apt-get install -y libnss3 libgconf-2-4 libxi6 libxrandr2 libxss1 libxtst6 libatk-bridge2.0-0 libcups2 libdrm2 libxdamage1 libxcomposite1 libxkbcommon0 libxshmfence1 && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir --no-build-isolation -r requirements.txt && \
+    pip install --no-cache-dir --no-build-isolation -r requirements-tests.txt && \
+    rm -rf /root/.cache/pip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copiez l'application
 COPY . .
 
 # Définez le répertoire de travail
 WORKDIR /app
+
+# Affichez la version de Chrome installée
+RUN google-chrome --version
 
 # Commande par défaut pour exécuter les tests
 CMD ["python", "manage.py", "test"]
