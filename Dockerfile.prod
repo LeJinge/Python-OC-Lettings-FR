@@ -1,5 +1,5 @@
 # Utilisez une image de base alpine pour une taille plus réduite
-FROM python:3.11-alpine
+FROM python:3.10
 
 # Installez les dépendances
 COPY requirements.txt .
