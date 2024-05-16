@@ -5,36 +5,22 @@ executors:
     docker:
       - image: lejinge/oc-lettings:test
     working_directory: ~/repo
-    resource_class: large
-    environment:
-      DJANGO_SECRET_KEY: your_secret_key_here
+    resource_class: large  # Augmente les ressources
 
 jobs:
-  build_test_image:
-    executor: docker-executor
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.7
-      - run:
-          name: Build Docker image for testing
-          command: docker build -f Dockerfile.test -t lejinge/oc-lettings:test .
-
   test:
     executor: docker-executor
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.7
       - run:
           name: Run tests in Docker
-          command: docker run --rm lejinge/oc-lettings:test python manage.py test
+          command: python manage.py test
       - run:
           name: Generate coverage report
           command: |
-            docker run --rm lejinge/oc-lettings:test coverage run --source='.' manage.py test
-            docker run --rm lejinge/oc-lettings:test coverage report --fail-under=80
-            docker run --rm lejinge/oc-lettings:test coverage xml
+            coverage run --source='.' manage.py test
+            coverage report --fail-under=80
+            coverage xml
       - store_artifacts:
           path: coverage.xml
           destination: coverage.xml
@@ -72,10 +58,7 @@ workflows:
   version: 2
   build_test_push:
     jobs:
-      - build_test_image
-      - test:
-          requires:
-            - build_test_image
+      - test
       - build_prod_image:
           requires:
             - test
