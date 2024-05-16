@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Installez les dépendances
 COPY requirements.txt .
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiez l'application
 COPY . .
@@ -13,4 +13,4 @@ COPY . .
 WORKDIR /app
 
 # Commande par défaut pour lancer l'application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myapp.wsgi:application"]
