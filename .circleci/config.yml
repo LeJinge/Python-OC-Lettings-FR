@@ -4,6 +4,8 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.8
+    environment:
+      DJANGO_SETTINGS_MODULE: "oc_lettings_site.settings"  # Assurez-vous que ce chemin est correct
     steps:
       - checkout
       - setup_remote_docker:
@@ -25,22 +27,28 @@ jobs:
       - run:
           name: Install ChromeDriver
           command: |
-            CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`
+            CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
             wget -N http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
             unzip chromedriver_linux64.zip
             sudo mv -f chromedriver /usr/local/bin/chromedriver
             sudo chmod 0755 /usr/local/bin/chromedriver
       - run:
+          name: Check Django Settings
+          command: |
+            echo "DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE"
+            python -c "import django; print(django.get_version())"
+            python manage.py check
+      - run:
           name: Run Tests
-          command: python -m unittest discover
+          command: python manage.py test
       - run:
           name: Build Docker Image
-          command: docker build -t your-dockerhub-username/your-image-name:latest .
+          command: docker build -t lejinge/oc-lettings:latest .
       - run:
           name: Push Docker Image
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push your-dockerhub-username/your-image-name:latest
+            docker push lejinge/oc-lettings:latest
 
 workflows:
   version: 2
