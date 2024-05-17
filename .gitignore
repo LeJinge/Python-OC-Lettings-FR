@@ -2,3 +2,25 @@
 *.pyc
 venv
 /config.yaml
+
+# Ignorer le répertoire .idea
+.idea/
+
+# Ignorer les fichiers spécifiques à l'utilisateur
+*.iml
+*.iws
+
+# Ignorer les fichiers de logs
+logs/
+*.log
+
+# Ignorer les dossiers de build
+out/
+target/
+build/
+
+# Ignorer les fichiers de configuration spécifiques à l'utilisateur
+workspace.xml
+tasks.xml
+usage.statistics.xml
+dictionaries/
