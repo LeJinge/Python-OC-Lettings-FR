@@ -8,7 +8,9 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Installez les dépendances
-RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir --progress-bar off -r requirements.txt
+# Mettre à jour pip à une version spécifique et installer les dépendances sans isolation et en mode silencieux
+RUN pip install --no-cache-dir --upgrade pip==23.0.1 && \
+    pip install --no-cache-dir --progress-bar off --no-build-isolation -r requirements.txt
 
 # Copiez l'application
 COPY . .
