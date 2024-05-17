@@ -39,8 +39,14 @@ jobs:
             nohup python manage.py runserver 0.0.0.0:8000 &
             sleep 5  # Attendre quelques secondes pour s'assurer que le serveur démarre
       - run:
-          name: Run Tests
-          command: python manage.py test
+          name: Run Tests with Coverage
+          command: |
+            coverage run --source='.' manage.py test
+            coverage report
+            coverage xml
+      - run:
+          name: Ensure Coverage is Above 80%
+          command: coverage report --fail-under=80
       - run:
           name: Build Docker Image
           command: docker build -t lejinge/oc-lettings:latest .
