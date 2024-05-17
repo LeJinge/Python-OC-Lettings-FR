@@ -33,11 +33,10 @@ jobs:
             sudo mv -f chromedriver /usr/local/bin/chromedriver
             sudo chmod 0755 /usr/local/bin/chromedriver
       - run:
-          name: Check Django Settings
+          name: Start Django Server
           command: |
-            echo "DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE"
-            python -c "import django; print(django.get_version())"
-            python manage.py check
+            nohup python manage.py runserver 0.0.0.0:8000 &
+            sleep 5  # Attendre quelques secondes pour s'assurer que le serveur démarre
       - run:
           name: Run Tests
           command: python manage.py test
