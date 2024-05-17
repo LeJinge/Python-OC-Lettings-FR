@@ -4,8 +4,9 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.8
+    resource_class: large  # Augmente les ressources allouées à ce job
     environment:
-      DJANGO_SETTINGS_MODULE: "oc_lettings_site.settings"  # Assurez-vous que ce chemin est correct
+      DJANGO_SETTINGS_MODULE: "oc_lettings_site.settings"
     steps:
       - checkout
       - setup_remote_docker:
