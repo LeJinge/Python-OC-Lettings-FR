@@ -1,6 +1,7 @@
 [run]
 omit =
     */tests.py
+    docs/*
 
 [report]
 fail_under = 80
