@@ -1,7 +1,10 @@
-# .readthedocs.yaml
-
 version: 2
 
+# Build environment configuration
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.8"
 # Build configuration for Sphinx
 sphinx:
   configuration: docs/conf.py
@@ -13,12 +16,5 @@ python:
 
 # Output formats
 formats:
-  - htmlzip
   - pdf
   - epub
-
-# Build environment configuration
-build:
-  os: ubuntu-22.04
-  tools:
-    python: 3.8
