@@ -3,7 +3,7 @@ Bienvenue dans la documentation de l'application Orange County Lettings!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Table des matières:
 
    presentation
    installation
