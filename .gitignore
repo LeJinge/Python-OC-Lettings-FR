@@ -24,3 +24,6 @@ workspace.xml
 tasks.xml
 usage.statistics.xml
 dictionaries/
+
+# Ignorer les dossiers Sphinx
+/docs/_build/
