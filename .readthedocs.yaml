@@ -14,7 +14,7 @@ python:
 
 # Output formats
 formats:
-  - html
+  - htmlzip
   - pdf
   - epub
 
