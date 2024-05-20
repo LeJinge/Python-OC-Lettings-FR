@@ -26,6 +26,9 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y google-chrome-stable
       - run:
+          name: Run Flake8
+          command: flake8 .
+      - run:
           name: Install ChromeDriver
           command: |
             CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
