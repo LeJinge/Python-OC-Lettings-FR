@@ -2,7 +2,8 @@
 lettings/models.py
 
 Ce module définit les modèles de données pour l'application lettings.
-Il contient deux classes, Address et Letting, qui représentent respectivement une adresse et une location.
+Il contient deux classes, Address et Letting, qui représentent
+respectivement une adresse et une location.
 """
 
 from django.core.validators import MaxValueValidator, MinLengthValidator
@@ -34,9 +35,10 @@ class Address(models.Model):
                 Options de configuration pour le modèle Address.
 
                 Attributs :
-                    verbose_name (str) : Le nom utilisé dans l'interface d'administration de Django.
-                    verbose_name_plural (str) : Le nom au pluriel du modèle, utilisé dans l'interface
+                    verbose_name (str) : Le nom utilisé dans l'interface
                     d'administration de Django.
+                    verbose_name_plural (str) : Le nom au pluriel du modèle,
+                    utilisé dans l'interface d'administration de Django.
                 """
         verbose_name = "Adresse"
         verbose_name_plural = "Adresses"

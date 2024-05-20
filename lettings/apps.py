@@ -14,6 +14,7 @@ class LettingsConfig(AppConfig):
         Configuration de l'application lettings pour Django.
 
         Attributs :
-            name (str) : Le nom de l'application. Il est utilisé par Django pour identifier l'application.
+            name (str) : Le nom de l'application. Il est utilisé
+            par Django pour identifier l'application.
         """
     name = 'lettings'

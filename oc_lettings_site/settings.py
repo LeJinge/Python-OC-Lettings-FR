@@ -152,16 +152,14 @@ else:
     SENTRY_DSN = os.getenv('CONFIG_SENTRY_DSN')
 
 sentry_logging = LoggingIntegration(
-    level=logging.INFO,  # Capture info and above as breadcrumbs
-    event_level=logging.ERROR  # Send errors as events
+    level=logging.INFO,
+    event_level=logging.ERROR
 )
 
 sentry_sdk.init(
     dsn=SENTRY_DSN,
     integrations=[DjangoIntegration(), sentry_logging],
-    # Si vous souhaitez capturer 100 % des transactions pour le suivi des performances
     traces_sample_rate=1.0,
-    # Définir cette valeur est important pour que Sentry puisse afficher les erreurs de manière plus détaillée
     send_default_pii=True
 )
 

@@ -9,7 +9,8 @@ def lettings_index(request):
     """
     Vue pour l'index des lettings.
 
-    Cette vue récupère tous les lettings et les renvoie à la template 'lettings/lettings_index.html'.
+    Cette vue récupère tous les lettings et les renvoie
+    à la template 'lettings/lettings_index.html'.
 
     Args :
         request (HttpRequest) : L'objet requête généré par Django.
@@ -29,7 +30,8 @@ def letting_detail(request, letting_id):
     """
     Vue pour le détail d'un letting.
 
-    Cette vue récupère un letting spécifique en utilisant son ID et le renvoie à la template 'lettings/letting.html'.
+    Cette vue récupère un letting spécifique en utilisant
+    son ID et le renvoie à la template 'lettings/letting.html'.
     Si le letting n'existe pas, une erreur 404 est renvoyée.
 
     Args :

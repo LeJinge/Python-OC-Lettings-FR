@@ -29,7 +29,8 @@ def profile_detail(request, profile_id):
     """
     Vue pour la page de détail d'un profil.
 
-    Cette vue récupère le profil correspondant à l'ID donné et le passe à la template 'profiles/profile.html'.
+    Cette vue récupère le profil correspondant à l'ID donné
+    et le passe à la template 'profiles/profile.html'.
     Si aucun profil correspondant n'est trouvé, une erreur 404 est déclenchée.
 
     Args :

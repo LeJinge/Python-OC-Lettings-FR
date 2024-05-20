@@ -21,9 +21,11 @@ class Profile(models.Model):
 
     def __str__(self):
         """
-        Méthode pour retourner une représentation sous forme de chaîne de caractères du modèle Profile.
+        Méthode pour retourner une
+        représentation sous forme de chaîne de caractères du modèle Profile.
 
         Retourne :
-            str : Le nom d'utilisateur de l'User associé à ce Profile.
+            str : Le nom d'utilisateur de
+            l'User associé à ce Profile.
         """
         return self.user.username

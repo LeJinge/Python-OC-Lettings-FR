@@ -139,7 +139,7 @@ class LettingsIntegrationTest(TestCase):
     def test_lettings_index_view_displays_lettings(self):
         response = self.client.get(reverse('lettings:lettings_index'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Test Letting")  # Vérifie si le listing est présent dans la réponse
+        self.assertContains(response, "Test Letting")
 
     def test_letting_detail_view_displays_details(self):
         response = self.client.get(reverse('lettings:lettings_detail', args=[self.letting.id]))
@@ -165,7 +165,8 @@ class LettingsFunctionalTest(unittest.TestCase):
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--window-size=1920,1080")
-        cls.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+        cls.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
+                                      options=chrome_options)
 
     @classmethod
     def tearDownClass(cls):
@@ -231,7 +232,8 @@ class AdminInterfaceTest(LettingsFunctionalTest):
 
         # Vérifier la présence du texte "Adresses"
         try:
-            WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.LINK_TEXT, "Adresses")))
+            (WebDriverWait(self.driver, 20).until
+             (EC.presence_of_element_located((By.LINK_TEXT, "Adresses"))))
             address_link = self.driver.find_element(By.LINK_TEXT, "Adresses")
             self.assertIsNotNone(address_link)
         except TimeoutException:

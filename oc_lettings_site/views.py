@@ -7,7 +7,8 @@ def index(request):
     """
     Vue pour la page d'accueil.
 
-    Cette fonction prend en argument une requête HTTP et renvoie une réponse HTTP qui affiche la page d'accueil.
+    Cette fonction prend en argument une requête
+    HTTP et renvoie une réponse HTTP qui affiche la page d'accueil.
 
     Args :
         request (HttpRequest) : La requête HTTP.
@@ -22,7 +23,8 @@ def error_404(request, exception):
     """
     Vue pour la page d'erreur 404.
 
-    Cette fonction prend en argument une requête HTTP et une exception, et renvoie une réponse HTTP qui affiche la page d'erreur 404.
+    Cette fonction prend en argument une requête HTTP et une exception,
+    et renvoie une réponse HTTP qui affiche la page d'erreur 404.
 
     Args :
         request (HttpRequest) : La requête HTTP.
@@ -39,7 +41,8 @@ def error_500(request):
     """
     Vue pour la page d'erreur 500.
 
-    Cette fonction prend en argument une requête HTTP et renvoie une réponse HTTP qui affiche la page d'erreur 500.
+    Cette fonction prend en argument une requête HTTP et
+    renvoie une réponse HTTP qui affiche la page d'erreur 500.
 
     Args :
         request (HttpRequest) : La requête HTTP.
@@ -55,7 +58,8 @@ def trigger_500(request):
     """
     Vue pour déclencher une erreur 500.
 
-    Cette fonction prend en argument une requête HTTP et déclenche une exception pour tester la gestion des erreurs 500.
+    Cette fonction prend en argument une requête HTTP et déclenche
+    une exception pour tester la gestion des erreurs 500.
 
     Args :
         request (HttpRequest) : La requête HTTP.
