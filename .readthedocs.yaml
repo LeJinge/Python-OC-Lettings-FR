@@ -2,24 +2,22 @@
 
 version: 2
 
-# Build documentation in the "docs" directory with Sphinx
+# Build configuration for Sphinx
 sphinx:
   configuration: docs/conf.py
 
-# Optionally specify the Python version you want to use
+# Python configuration
 python:
-  version: 3.8
+  version: "3.8"
   install:
     - requirements: docs/requirements.txt
 
-# Build using a "stable" version
+# Output formats
 formats:
   - html
   - pdf
   - epub
 
-# Environment variables for the build process
+# Build environment configuration
 build:
   image: latest
-
-# You can add other configurations here as needed
