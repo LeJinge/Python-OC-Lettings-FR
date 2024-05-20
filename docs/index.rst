@@ -9,10 +9,3 @@ Bienvenue dans la documentation de l'application Orange County Lettings!
    installation
    pipeline
    development_guide/index
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
